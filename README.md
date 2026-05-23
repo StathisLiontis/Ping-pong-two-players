@@ -1,2 +1,3 @@
 # Ping-pong-two-players
-a game for two players play ping-pong
+A Game for two Players Play ping-pong.
+The fist idea is done!!!!
