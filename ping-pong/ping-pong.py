@@ -40,14 +40,13 @@ player_2 = Player_Role("racketredss.png", 30, 250, 5, 90, 140)
 ball = Ball_Role("ball_champions.png", 250, 250, 5, 50, 50)
 win_height = 500
 #ball directions
-speed_x = 3
-speed_y = 3
+speed_x = 5
+speed_y = 5
 
 #music for background
-
-#mixer.init()
-#mixer.music.load("")
-#mixer.music.play()
+mixer.init()
+mixer.music.load("alec_koff-carnaval.mp3")
+mixer.music.play()
 
 #clock for FPS
 clock = time.Clock()
