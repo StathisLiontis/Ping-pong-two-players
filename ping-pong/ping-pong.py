@@ -48,9 +48,9 @@ speed_y = 5
 global score
 score = 0
 #music for background
-mixer.init()
-mixer.music.load("alec_koff-carnaval.mp3")
-mixer.music.play()
+#mixer.init()
+#mixer.music.load("")
+#mixer.music.play()
 #clock for FPS
 clock = time.Clock()
 FPS = 60
@@ -73,13 +73,13 @@ while run:
     window.blit(text_score,(10, 2))
     # lose for player 2
     if ball.rect.x > 650:
-        mixer.music.stop()
+        #mixer.music.stop()
         lose = style.render("You lost the ball player 2", True, (0, 230, 255))
         window.blit(lose, (175, 90))
         finish = True
     # lose for player 1
     if ball.rect.x < -4:
-        mixer.music.stop()
+        #mixer.music.stop()
         lose = style.render("You lost the ball player 1", True, (255, 0, 0))
         window.blit(lose, (175, 90))
         finish = True
