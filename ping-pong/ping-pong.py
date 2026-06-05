@@ -53,6 +53,7 @@ mixer.music.load("alisiabeats-titanium-170190.mp3")
 mixer.music.set_volume(0.5)
 mixer.music.play()
 sound_of_winner = mixer.Sound('kevincsupo-marble-it-up-ultra-soccer-win-sound.mp3')
+restart_sound = mixer.Sound('restart_button.mp3')
 #clock for FPS
 clock = time.Clock()
 FPS = 60 
@@ -60,6 +61,7 @@ FPS = 60
 run = True
 finish = False
 sound_played = False
+sound_played_restart = False
 while run:
     window.blit(backgroynd_game,(0,0))
     keys_pressed = key.get_pressed()
@@ -75,9 +77,13 @@ while run:
         # restart the game
         if finish == True and e.type == KEYDOWN:
             if e.key == K_r:
+                if not sound_played_restart:
+                    restart_sound.play()
+                    sound_played_restart = True
                 # επαναφορα μεταβλητων
                 finish = False
                 sound_played = False
+                sound_played_restart = False
                 score = 0 
                 speed_x = 5
                 speed_y = 5
@@ -127,7 +133,7 @@ while run:
         winners = style.render("The player 2 is the winner", True, (0, 230, 255))
         window.blit(winners, (175, 130))
         # restart text
-        restart_text = style.render("Press 'R' to Restart the game", True,(255, 219, 261))
+        restart_text = style.render("Press 'R' to Restart the game", True,(255, 219, 61))
         window.blit(restart_text,(175, 200))
         finish = True
     
