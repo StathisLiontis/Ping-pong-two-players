@@ -32,53 +32,64 @@ class Ball_Role(GameSprite):
 #create game window
 window = display.set_mode((700, 500))
 display.set_caption('Ping-Pong_two_players')
-
 #background and items
 backgroynd_game = transform.scale(image.load("table_ping_pong_champion_vs_pong_star.png"),(700, 500))
 player_1 = Player_Role("racketbulep.png", 600, 250, 5, 90, 140)
 player_2 = Player_Role("racketredss.png", 30, 250, 5, 90, 140)
 ball = Ball_Role("ball_champions.png", 250, 250, 5, 50, 50)
 win_height = 500
+# text font 
+font.init()
+style = font.SysFont("Arial", 40)
 #ball directions
 speed_x = 5
 speed_y = 5
-
 #music for background
 mixer.init()
 mixer.music.load("alec_koff-carnaval.mp3")
 mixer.music.play()
-
 #clock for FPS
 clock = time.Clock()
 FPS = 60
-
 # game worked but now the name is run
 run = True
 finish = False
 while run:
     window.blit(backgroynd_game,(0,0))
     keys_pressed = key.get_pressed()
+    # reset for items
     player_1.reset()
     player_2.reset()
     ball.reset()
-
+    # guit for game
     for e in event.get():
         if e.type == QUIT:
             run = False
+
+    if ball.rect.x > 650:
+        mixer.music.stop()
+        lose = style.render("You lost the ball player 2", True, (0, 230, 255))
+        window.blit(lose, (175, 90))
+        finish = True
+
+    if ball.rect.x < -4:
+        mixer.music.stop()
+        lose = style.render("You lost the ball player 1", True, (255, 0, 0))
+        window.blit(lose, (175, 90))
+        finish = True
     
-    player_1.update()
-    player_2.updates()
-    #ball.update()
-    
+    # finish and rules
     if finish != True:
+        player_1.update()
+        player_2.updates()
         ball.rect.x += speed_x
         ball.rect.y += speed_y
     
-    if ball.rect.y > win_height-50 or ball.rect.y < 0:
-        speed_y *= -1
+        if ball.rect.y > win_height-50 or ball.rect.y < 0:
+            speed_y *= -1
     
-    if sprite.collide_rect(player_1, ball) or sprite.collide_rect(player_2, ball):
-        speed_x *= -1
+        if sprite.collide_rect(player_1, ball) or sprite.collide_rect(player_2, ball):
+            speed_x *= -1
 
     clock.tick(FPS)
     display.update() 
