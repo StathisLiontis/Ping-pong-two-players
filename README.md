@@ -1,6 +1,8 @@
 # Ping-pong-two-players
 A Game for two Players Play Ping-pong.
 
+Player 1 use W and S and Player 2 Up and Down. Press R to restart.
+
 Get ready for the Ultimate 2-Player Arcade showdown in this high-speed Ping-Pong challenge!!
 
 Control the Table with precise Movements and unleash unpredictable curveballs to Outsmart Your Opponent.
