@@ -48,12 +48,13 @@ speed_y = 5
 global score
 score = 0
 #music for background
-#mixer.init()
-#mixer.music.load("")
-#mixer.music.play()
+mixer.init()
+mixer.music.load("alisiabeats-titanium-170190.mp3")
+mixer.music.set_volume(0.5)
+mixer.music.play()
 #clock for FPS
 clock = time.Clock()
-FPS = 60
+FPS = 60 
 # game worked but now the name is run
 run = True
 finish = False
@@ -71,17 +72,21 @@ while run:
     # score perfect saves of ball
     text_score = style.render("perfect saves of ball:" + str(score), 1, (225, 255, 255))
     window.blit(text_score,(10, 2))
-    # lose for player 2
+    # lose for player 2 and winner player 1
     if ball.rect.x > 650:
-        #mixer.music.stop()
+        mixer.music.stop()
         lose = style.render("You lost the ball player 2", True, (0, 230, 255))
         window.blit(lose, (175, 90))
+        winner = style.render("The player 1 is the winner", True, (255, 0, 0))
+        window.blit(winner, (175, 130))
         finish = True
-    # lose for player 1
+    # lose for player 1 and winner player 2
     if ball.rect.x < -4:
-        #mixer.music.stop()
+        mixer.music.stop()
         lose = style.render("You lost the ball player 1", True, (255, 0, 0))
         window.blit(lose, (175, 90))
+        winners = style.render("The player 2 is the winner", True, (0, 230, 255))
+        window.blit(winners, (175, 130))
         finish = True
 
     # finish and rules
