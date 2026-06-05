@@ -94,10 +94,27 @@ while run:
         if ball.rect.y > win_height-50 or ball.rect.y < 0:
             speed_y *= -1
     
-        if sprite.collide_rect(player_1, ball) or sprite.collide_rect(player_2, ball):
+        if sprite.collide_rect(player_1, ball) and speed_x > 0:
             speed_x *= -1
             score = score +1
             speed_of_ball = +100
+            speed_x -= 0.2
+            if keys_pressed[K_UP]:
+                speed_y -= 0.8
+            if keys_pressed[K_DOWN]:
+                speed_y += 0.8
+            ball.rect.x += speed_x * 2
+
+        if sprite.collide_rect(player_2, ball) and speed_x < 0:
+            speed_x *= -1
+            score = score +1
+            speed_of_ball = +100
+            speed_x += 0.2
+            if keys_pressed[K_w]:
+                speed_y -= 0.8
+            if keys_pressed[K_s]:
+                speed_y += 0.8
+            ball.rect.x += speed_x * 2
 
     clock.tick(FPS)
     display.update() 
