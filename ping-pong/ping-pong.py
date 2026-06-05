@@ -34,16 +34,19 @@ window = display.set_mode((700, 500))
 display.set_caption('Ping-Pong_two_players')
 #background and items
 backgroynd_game = transform.scale(image.load("table_ping_pong_champion_vs_pong_star.png"),(700, 500))
+speed_of_ball = 5
 player_1 = Player_Role("racketbulep.png", 600, 250, 5, 90, 140)
 player_2 = Player_Role("racketredss.png", 30, 250, 5, 90, 140)
-ball = Ball_Role("ball_champions.png", 250, 250, 5, 50, 50)
+ball = Ball_Role("ball_champions.png", 250, 250, speed_of_ball, 50, 50)
 win_height = 500
 # text font 
 font.init()
 style = font.SysFont("Arial", 40)
-#ball directions
+#ball directions and perfect score
 speed_x = 5
 speed_y = 5
+global score
+score = 0
 #music for background
 mixer.init()
 mixer.music.load("alec_koff-carnaval.mp3")
@@ -65,19 +68,22 @@ while run:
     for e in event.get():
         if e.type == QUIT:
             run = False
-
+    # score perfect saves of ball
+    text_score = style.render("perfect saves of ball:" + str(score), 1, (225, 255, 255))
+    window.blit(text_score,(10, 2))
+    # lose for player 2
     if ball.rect.x > 650:
         mixer.music.stop()
         lose = style.render("You lost the ball player 2", True, (0, 230, 255))
         window.blit(lose, (175, 90))
         finish = True
-
+    # lose for player 1
     if ball.rect.x < -4:
         mixer.music.stop()
         lose = style.render("You lost the ball player 1", True, (255, 0, 0))
         window.blit(lose, (175, 90))
         finish = True
-    
+
     # finish and rules
     if finish != True:
         player_1.update()
@@ -90,6 +96,8 @@ while run:
     
         if sprite.collide_rect(player_1, ball) or sprite.collide_rect(player_2, ball):
             speed_x *= -1
+            score = score +1
+            speed_of_ball = +100
 
     clock.tick(FPS)
     display.update() 
