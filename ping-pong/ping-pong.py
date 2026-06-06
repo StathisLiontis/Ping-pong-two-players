@@ -1,6 +1,5 @@
 # create a game
 from pygame import *
-
 # class
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, player_scale_1, player_scale_2):
@@ -47,6 +46,8 @@ speed_x = 5
 speed_y = 5
 global score
 score = 0
+score_player_1 = 0
+score_player_2 = 0
 #music for background
 mixer.init()
 mixer.music.load("alisiabeats-titanium-170190.mp3")
@@ -86,6 +87,8 @@ while run:
                 sound_played = False
                 sound_played_restart = False
                 score = 0 
+                score_player_1 = 0
+                score_player_2 = 0
                 speed_x = 5
                 speed_y = 5
                 #επαναφορα θεσεων
@@ -107,50 +110,73 @@ while run:
         clock.tick(FPS)
         continue
     
+    #text for match
+    text_match_score = style.render(f'P1: {score_player_1} | P2: {score_player_2}', 1, (255,255,255))
+    window.blit(text_match_score,(10, 450))
     # score perfect saves of ball
     text_score = style.render("perfect saves of ball:" + str(score), 1, (225, 255, 255))
     window.blit(text_score,(10, 2))
-    
+    # informaition for space
     informaition_text = style.render("Press 'SPACE' to pause", True,(255, 219, 61))
     window.blit(informaition_text,(350, 2))
 
     # lose for player 2 and winner player 1
     if ball.rect.x > 650:
-        # stop the background music
-        mixer.music.stop()
-        # winner sound
-        if not sound_played:
-            sound_of_winner.play()
-            sound_played = True
-        # lose text
-        lose = style.render("You lost the ball player 2", True, (0, 230, 255))
-        window.blit(lose, (175, 90))
-        # winner text
-        winner = style.render("The player 1 is the winner", True, (255, 0, 0))
-        window.blit(winner, (175, 130))
-        # restart text
-        restart_text = style.render("Press 'R' to Restart the game", True,(255, 219, 61))
-        window.blit(restart_text,(175, 200))
-        finish = True
+        if score_player_1 <= 3:
+            score_player_1 += 1 # take poit player 1
+        else:
+            score_player_1 += 0
+        if score_player_1 < 3:
+            score = 0
+            ball.rect.x = 250
+            ball.rect.y = 250
+            speed_x = -3
+        else:
+            # stop the background music
+            mixer.music.stop()
+            # winner sound
+            if not sound_played:
+                sound_of_winner.play()
+                sound_played = True
+            # lose text
+            lose = style.render("You lost the ball player 2", True, (0, 230, 255))
+            window.blit(lose, (175, 90))
+            # winner text
+            winner = style.render("The player 1 is the winner", True, (255, 0, 0))
+            window.blit(winner, (175, 130))
+            # restart text
+            restart_text = style.render("Press 'R' to Restart the game", True,(255, 219, 61))
+            window.blit(restart_text,(175, 200))
+            finish = True
     
     # lose for player 1 and winner player 2
     if ball.rect.x < -4:
-        # stop the background music
-        mixer.music.stop()
-        # winner sound
-        if not sound_played:
-            sound_of_winner.play()
-            sound_played = True
-        # lose text
-        lose = style.render("You lost the ball player 1", True, (255, 0, 0))
-        window.blit(lose, (175, 90))
-        # winner text
-        winners = style.render("The player 2 is the winner", True, (0, 230, 255))
-        window.blit(winners, (175, 130))
-        # restart text
-        restart_text = style.render("Press 'R' to Restart the game", True,(255, 219, 61))
-        window.blit(restart_text,(175, 200))
-        finish = True
+        if score_player_2 <= 3:
+            score_player_2 += 1 # take poit player 2
+        else:
+            score_player_2 += 0
+        if score_player_2 < 3:
+            score = 0
+            ball.rect.x = 250
+            ball.rect.y = 250
+            speed_x = -3
+        else:
+            # stop the background music
+            mixer.music.stop()
+            # winner sound
+            if not sound_played:
+                sound_of_winner.play()
+                sound_played = True
+            # lose text
+            lose = style.render("You lost the ball player 1", True, (255, 0, 0))
+            window.blit(lose, (175, 90))
+            # winner text
+            winners = style.render("The player 2 is the winner", True, (0, 230, 255))
+            window.blit(winners, (175, 130))
+            # restart text
+            restart_text = style.render("Press 'R' to Restart the game", True,(255, 219, 61))
+            window.blit(restart_text,(175, 200))
+            finish = True
     
     # finish and rules
     if finish != True:
