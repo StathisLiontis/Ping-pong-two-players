@@ -18,12 +18,19 @@ class Player_Role(GameSprite):
             self.rect.y -= 5
         if keys_pressed[K_DOWN] and self.rect.y < 400:
             self.rect.y += 5
+        if keys_pressed[K_LEFT] and self.rect.x > 360:
+            self.rect.x -= 5
+        if keys_pressed[K_RIGHT] and self.rect.x < 620:
+            self.rect.x += 5
     def updates(self):
         if keys_pressed[K_w] and self.rect.y > 5:
             self.rect.y -= 5
         if keys_pressed[K_s] and self.rect.y < 400:
             self.rect.y += 5
-
+        if keys_pressed[K_a] and self.rect.x > 0:
+            self.rect.x -= 5
+        if keys_pressed[K_d] and self.rect.x < 260:
+            self.rect.x += 5
 class Ball_Role(GameSprite):
     def update(self):
         pass
@@ -101,6 +108,8 @@ while run:
                 ball.rect.y = 225
                 player_1.rect.y = 250
                 player_2.rect.y = 250
+                player_1.rect.x = 600
+                player_2.rect.x = 30
                 #επαναφορα τις μουσικης
                 mixer.music.play(-1)
         #mute the music
@@ -124,16 +133,16 @@ while run:
                 sound_pause = False
     # how the players play the game.
     if How_play:
-        How_play_text_1 = style.render('Player1 (red racket) use W and S', True, (225, 219, 61))
+        How_play_text_1 = style.render('Player1 (red racket) use W and S and A and D', True, (225, 219, 61))
         window.blit(How_play_text_1, (35, 100))
         How_play_text_1_1 = style.render('in the keyboard to move', True, (225, 219, 61))
         window.blit(How_play_text_1_1, (35, 140))
-        How_play_text_2 = style.render('Player2 (blue racket) use UP and DOWN Arrows', True, (225, 219, 61))
-        window.blit(How_play_text_2, (35, 170))
-        How_play_text_2_2 = style.render('in the keyboard to move', True, (225, 219, 61))
-        window.blit(How_play_text_2_2, (35, 200))
+        How_play_text_2 = style.render('Player2 (blue racket) use UP and DOWN and LEFT', True, (225, 219, 61))
+        window.blit(How_play_text_2, (35, 180))
+        How_play_text_2_2 = style.render('and RIGHT Arrows in the keyboard to move', True, (225, 219, 61))
+        window.blit(How_play_text_2_2, (35, 220))
         How_play_text_2_3 = style.render("Press 'H' to play", True, (225, 219, 61))
-        window.blit(How_play_text_2_3, (50, 250))
+        window.blit(How_play_text_2_3, (50, 265))
         if not sound_pause:
             pause_sound.play()
             sound_pause = True
