@@ -62,6 +62,7 @@ run = True
 finish = False
 sound_played = False
 sound_played_restart = False
+pause = False
 while run:
     window.blit(backgroynd_game,(0,0))
     keys_pressed = key.get_pressed()
@@ -94,11 +95,25 @@ while run:
                 player_2.rect.y = 250
                 #επαναφορα τις μουσικης
                 mixer.music.play(-1)
+        # space for use pause
+        if e.type == KEYDOWN:
+            if e.key == K_SPACE and not finish:
+                pause = not pause
+    # pause and unpause
+    if pause:
+        pause_text = style.render("Press 'SPACE' to UNpause the game", True,(255, 219, 61))
+        window.blit(pause_text,(115, 100))
+        display.update()
+        clock.tick(FPS)
+        continue
     
     # score perfect saves of ball
     text_score = style.render("perfect saves of ball:" + str(score), 1, (225, 255, 255))
     window.blit(text_score,(10, 2))
     
+    informaition_text = style.render("Press 'SPACE' to pause", True,(255, 219, 61))
+    window.blit(informaition_text,(350, 2))
+
     # lose for player 2 and winner player 1
     if ball.rect.x > 650:
         # stop the background music
