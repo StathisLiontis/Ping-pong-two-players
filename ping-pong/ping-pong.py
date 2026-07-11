@@ -59,8 +59,14 @@ score_player_2 = 0
 #music for background
 mixer.init()
 mixer.music.load("alisiabeats-titanium-170190.mp3")
-mixer.music.set_volume(0.5)
+volume = 0.3
+mixer.music.set_volume(volume)
 mixer.music.play()
+settings_btn_rect = Rect(610, 1, 90, 50)
+slider_bg_rect = Rect(200, 240, 300, 20)
+back_btn_rect = Rect(250, 320, 200, 45)
+show_settings = False
+dragging_slider = False
 sound_of_winner = mixer.Sound('kevincsupo-marble-it-up-ultra-soccer-win-sound.mp3')
 restart_sound = mixer.Sound('restart_button.mp3')
 pause_sound = mixer.Sound('pause_sound_effect.mp3')
@@ -79,15 +85,31 @@ music_muted = False
 while run:
     window.blit(backgroynd_game,(0,0))
     keys_pressed = key.get_pressed()
+    mx, my = mouse.get_pos()
     # reset for items
     player_1.reset()
     player_2.reset()
     ball.reset()
     
-    # guit for game
+    # guit for game and settings
     for e in event.get():
         if e.type == QUIT:
             run = False
+        if e.type == MOUSEBUTTONDOWN and e.button == 1:
+            if settings_btn_rect.collidepoint((mx, my)) and not show_settings:
+                show_settings = True
+                pause = True
+                sound_pause = False
+            elif show_settings:
+                slider_handle_x = slider_bg_rect.x + int(volume * slider_bg_rect.width)
+                handle_rect = Rect(slider_handle_x - 10, slider_bg_rect.y - 10, 20, 40)
+                if handle_rect.collidepoint((mx, my)) or slider_bg_rect.collidepoint((mx, my)):
+                    dragging_slider = True
+                if back_btn_rect.collidepoint((mx, my)):
+                    show_settings = False
+                    pause = False
+        if e.type == MOUSEBUTTONUP and e.button == 1:
+            dragging_slider = False
         # restart the game
         if finish == True and e.type == KEYDOWN:
             if e.key == K_r:
@@ -112,15 +134,6 @@ while run:
                 player_2.rect.x = 30
                 #επαναφορα τις μουσικης
                 mixer.music.play(-1)
-        #mute the music
-        if e.type == KEYDOWN:
-            if e.key == K_m:
-                if music_muted:
-                    mixer.music.unpause()
-                    music_muted = False
-                else:
-                    mixer_music.pause()
-                    music_muted = True
         # h for learn how to play the game.
         if e.type == KEYDOWN:
             if e.key == K_h:
@@ -128,9 +141,48 @@ while run:
                 sound_pause = False
         # space for use pause
         if e.type == KEYDOWN:
-            if e.key == K_SPACE and not finish:
+            if e.key == K_SPACE and not finish and not show_settings:
                 pause = not pause
                 sound_pause = False
+    
+    if show_settings and dragging_slider:
+        if mx < slider_bg_rect.x:
+            mx_clamped = slider_bg_rect.x
+        elif mx > slider_bg_rect.x + slider_bg_rect.width:
+            mx_clamped = slider_bg_rect.x + slider_bg_rect.width
+        else:
+            mx_clamped = mx
+        volume = (mx_clamped - slider_bg_rect.x) / slider_bg_rect.width
+        mixer.music.set_volume(volume)
+        
+    if not show_settings:
+        draw.rect(window, (150, 150, 150) if settings_btn_rect.collidepoint((mx, my)) else (100, 100, 100), settings_btn_rect)
+        window.blit(styles.render("Settings", True, (255, 255, 255)), (settings_btn_rect.x + 8, settings_btn_rect.y + 5))
+        
+    if show_settings:
+        settings_panel = Surface((400, 300))
+        settings_panel.fill((40, 40, 40))
+        window.blit(settings_panel, (150, 100))
+            
+        window.blit(style.render("MUSIC SETTINGS", True, (255, 255, 255)), (225, 120))
+            
+        draw.rect(window, (70, 70, 70), slider_bg_rect)
+        slider_handle_x = slider_bg_rect.x + int(volume * slider_bg_rect.width)
+        draw.rect(window, (200, 50, 50), (slider_handle_x - 10, slider_bg_rect.y - 10, 20, 40))
+
+        vol_text = f"VOLUME OF MUSIC: {int(volume * 100)}%"
+        window.blit(style.render(vol_text, True, (255, 255, 255)), (slider_bg_rect.x + 1, slider_bg_rect.y - 50))
+
+        draw.rect(window, (0, 200, 100) if back_btn_rect.collidepoint((mx, my)) else (100, 100, 100), back_btn_rect)
+        window.blit(style.render("BACK", True, (255, 255, 255)), (back_btn_rect.x + 60, back_btn_rect.y + 5))
+        if not sound_pause:
+            pause_sound.play()
+            sound_pause = True
+        
+        display.update()
+        clock.tick(FPS)
+        continue
+    
     # how the players play the game.
     if How_play:
         How_play_text_1 = style.render('Player1 (red racket) use W and S and A and D', True, (225, 219, 61))
@@ -146,6 +198,7 @@ while run:
         if not sound_pause:
             pause_sound.play()
             sound_pause = True
+        
         display.update()
         clock.tick(FPS)
         continue
@@ -161,19 +214,16 @@ while run:
         continue
     #text for match
     text_match_score = style.render(f'P1: {score_player_1} | P2: {score_player_2}', 1, (255,255,255))
-    window.blit(text_match_score,(3, 455))
+    window.blit(text_match_score,(30, 455))
     # score perfect saves of ball
     text_score = style.render("Perfect saves of Ball:" + str(score), 1, (225, 255, 255))
     window.blit(text_score,(10, 2))
     # informaition for space
     informaition_text = style.render("Press 'SPACE' to pause", True,(255, 219, 61))
-    window.blit(informaition_text,(360, 2))
-    # information for mute the music
-    mute_music_text = styles.render("Press 'M' mute/unmute music", True,(255, 219, 61))
-    window.blit(mute_music_text, (410, 460))
+    window.blit(informaition_text,(360, 450))
     #information for how to play by button edition
     informaition_play_text = styles.render("Press 'H' how to play", True, (255, 219, 61))
-    window.blit(informaition_play_text, (160, 470))
+    window.blit(informaition_play_text, (360, 2))
     # lose for player 2 and winner player 1 
     if ball.rect.x > 650:
         if score_player_1 <= 2:
@@ -266,4 +316,5 @@ while run:
             ball.rect.x += speed_x * 2
 
     clock.tick(FPS)
-    display.update() 
+    display.update()
+quit() 
