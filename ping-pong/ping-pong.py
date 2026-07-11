@@ -62,9 +62,17 @@ mixer.music.load("alisiabeats-titanium-170190.mp3")
 volume = 0.3
 mixer.music.set_volume(volume)
 mixer.music.play()
+
 settings_btn_rect = Rect(610, 1, 90, 50)
-slider_bg_rect = Rect(200, 240, 300, 20)
-back_btn_rect = Rect(250, 320, 200, 45)
+quit_rect = Rect(385, 350, 160, 45)
+back_btn_rect = Rect(158, 350, 160, 45)
+slider_bg_rect = Rect(170, 280, 360, 20)
+sound_toggle_rect = Rect(250, 170, 200, 45)
+
+COLOR_NORMAL = (100, 100, 100)
+COLOR_HOVER = (200, 50, 50)
+COLOR_TEXT = (255, 255, 255)
+
 show_settings = False
 dragging_slider = False
 sound_of_winner = mixer.Sound('kevincsupo-marble-it-up-ultra-soccer-win-sound.mp3')
@@ -76,6 +84,7 @@ FPS = 60
 # game worked but now the name is run
 run = True
 finish = False
+sound_enabled = True
 sound_played = False
 sound_played_restart = False
 sound_pause = False
@@ -104,16 +113,31 @@ while run:
                 slider_handle_x = slider_bg_rect.x + int(volume * slider_bg_rect.width)
                 handle_rect = Rect(slider_handle_x - 10, slider_bg_rect.y - 10, 20, 40)
                 if handle_rect.collidepoint((mx, my)) or slider_bg_rect.collidepoint((mx, my)):
-                    dragging_slider = True
+                    if sound_enabled:
+                        dragging_slider = True
+                
+                if sound_toggle_rect.collidepoint((mx, my)):
+                    sound_enabled = not sound_enabled
+                    if sound_enabled:
+                        mixer.music.unpause()
+                    else:
+                        mixer.music.pause()
+                
                 if back_btn_rect.collidepoint((mx, my)):
                     show_settings = False
                     pause = False
+            
+            if quit_rect.collidepoint((mx, my)):
+                print("OUT OF GAME FROM SETTINGS")
+                run = False
+        
         if e.type == MOUSEBUTTONUP and e.button == 1:
             dragging_slider = False
+        
         # restart the game
         if finish == True and e.type == KEYDOWN:
             if e.key == K_r:
-                if not sound_played_restart:
+                if not sound_played_restart and sound_enabled:
                     restart_sound.play()
                     sound_played_restart = True
                 # επαναφορα μεταβλητων
@@ -133,7 +157,8 @@ while run:
                 player_1.rect.x = 600
                 player_2.rect.x = 30
                 #επαναφορα τις μουσικης
-                mixer.music.play(-1)
+                if sound_enabled:
+                    mixer.music.play(-1)
         # h for learn how to play the game.
         if e.type == KEYDOWN:
             if e.key == K_h:
@@ -158,24 +183,44 @@ while run:
     if not show_settings:
         draw.rect(window, (150, 150, 150) if settings_btn_rect.collidepoint((mx, my)) else (100, 100, 100), settings_btn_rect)
         window.blit(styles.render("Settings", True, (255, 255, 255)), (settings_btn_rect.x + 8, settings_btn_rect.y + 5))
-        
-    if show_settings:
-        settings_panel = Surface((400, 300))
-        settings_panel.fill((40, 40, 40))
-        window.blit(settings_panel, (150, 100))
-            
-        window.blit(style.render("MUSIC SETTINGS", True, (255, 255, 255)), (225, 120))
-            
-        draw.rect(window, (70, 70, 70), slider_bg_rect)
-        slider_handle_x = slider_bg_rect.x + int(volume * slider_bg_rect.width)
-        draw.rect(window, (200, 50, 50), (slider_handle_x - 10, slider_bg_rect.y - 10, 20, 40))
 
-        vol_text = f"VOLUME OF MUSIC: {int(volume * 100)}%"
+    if show_settings:
+        settings_panel = Surface((400, 320))
+        settings_panel.fill((40, 40, 40))
+        window.blit(settings_panel, (150, 90))
+            
+        window.blit(style.render("SETTINGS", True, (255, 255, 255)), (285, 120))
+        
+        sound_btn_color = (0, 180, 50) if sound_enabled else (180, 40, 40)
+        draw.rect(window, sound_btn_color, sound_toggle_rect)
+
+        sound_status_text = "SOUND: ON" if sound_enabled else "SOUND: OFF"
+        sound_text_render = styles.render(sound_status_text, True, (255, 255, 255))
+        window.blit(sound_text_render, (sound_toggle_rect.x + 15, sound_toggle_rect.y + 10))
+
+        slider_color = (70, 70, 70) if sound_enabled else (50, 50, 50)
+        draw.rect(window, slider_color, slider_bg_rect)
+
+        if sound_enabled:
+            slider_handle_x = slider_bg_rect.x + int(volume * slider_bg_rect.width)
+            draw.rect(window, (200, 50, 50), (slider_handle_x - 2, slider_bg_rect.y - 10, 20, 40))
+            vol_text = f"VOLUME OF MUSIC: {int(volume * 100)}%"
+        else:
+            vol_text = "VOLUME OF MUSIC: MUTE"
+        
         window.blit(style.render(vol_text, True, (255, 255, 255)), (slider_bg_rect.x + 1, slider_bg_rect.y - 50))
 
         draw.rect(window, (0, 200, 100) if back_btn_rect.collidepoint((mx, my)) else (100, 100, 100), back_btn_rect)
-        window.blit(style.render("BACK", True, (255, 255, 255)), (back_btn_rect.x + 60, back_btn_rect.y + 5))
-        if not sound_pause:
+        window.blit(style.render("BACK", True, (255, 255, 255)), (back_btn_rect.x + 30, back_btn_rect.y + 5))
+        
+        if quit_rect.collidepoint((mx, my)):
+            draw.rect(window, COLOR_HOVER, quit_rect)
+        else:
+            draw.rect(window, COLOR_NORMAL, quit_rect)
+        quit_text = style.render("QUIT", True, COLOR_TEXT)
+        window.blit(quit_text, (quit_rect.x + 40, quit_rect.y + 5))
+        
+        if not sound_pause and sound_enabled:
             pause_sound.play()
             sound_pause = True
         
@@ -195,7 +240,7 @@ while run:
         window.blit(How_play_text_2_2, (35, 220))
         How_play_text_2_3 = style.render("Press 'H' to play", True, (225, 219, 61))
         window.blit(How_play_text_2_3, (50, 265))
-        if not sound_pause:
+        if not sound_pause and sound_enabled:
             pause_sound.play()
             sound_pause = True
         
@@ -206,7 +251,7 @@ while run:
     if pause:
         pause_text = style.render("Press 'SPACE' to UNpause the game", True,(255, 219, 61))
         window.blit(pause_text,(125, 100))
-        if not sound_pause:
+        if not sound_pause and sound_enabled:
             pause_sound.play()
             sound_pause = True
         display.update()
@@ -239,7 +284,7 @@ while run:
             # stop the background music
             mixer.music.stop()
             # winner sound
-            if not sound_played:
+            if not sound_played and sound_enabled:
                 sound_of_winner.play()
                 sound_played = True
             # lose text
@@ -268,7 +313,7 @@ while run:
             # stop the background music
             mixer.music.stop()
             # winner sound
-            if not sound_played:
+            if not sound_played and sound_enabled:
                 sound_of_winner.play()
                 sound_played = True
             # lose text
