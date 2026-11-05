@@ -1,3 +1,4 @@
+# game version 2.7
 # create a game
 from pygame import *
 # class
@@ -47,8 +48,8 @@ ball = Ball_Role("ball_champions.png", 250, 250, speed_of_ball, 50, 50)
 win_height = 500
 # text font 
 font.init()
-style = font.SysFont("Arial", 34)
-styles = font.SysFont("Arial", 25)
+style = font.SysFont("PressStart2P-Regular.tff", 34)
+styles = font.SysFont("PressStart2P-Regular.tff", 25)
 #ball directions and perfect score
 speed_x = 5
 speed_y = 5
@@ -63,7 +64,7 @@ volume = 0.3
 mixer.music.set_volume(volume)
 mixer.music.play()
 
-settings_btn_rect = Rect(610, 1, 90, 50)
+settings_btn_rect = Rect(610, 1, 90, 40)
 quit_rect = Rect(385, 350, 160, 45)
 back_btn_rect = Rect(158, 350, 160, 45)
 slider_bg_rect = Rect(170, 280, 360, 20)
@@ -80,7 +81,7 @@ restart_sound = mixer.Sound('restart_button.mp3')
 pause_sound = mixer.Sound('pause_sound_effect.mp3')
 #clock for FPS
 clock = time.Clock()
-FPS = 60 
+FPS = 60  
 # game worked but now the name is run
 run = True
 finish = False
@@ -142,6 +143,7 @@ while run:
                     sound_played_restart = True
                 # επαναφορα μεταβλητων
                 finish = False
+                sound_enabled = True
                 sound_played = False
                 sound_played_restart = False
                 score = 0 
@@ -182,7 +184,7 @@ while run:
         
     if not show_settings:
         draw.rect(window, (150, 150, 150) if settings_btn_rect.collidepoint((mx, my)) else (100, 100, 100), settings_btn_rect)
-        window.blit(styles.render("Settings", True, (255, 255, 255)), (settings_btn_rect.x + 8, settings_btn_rect.y + 5))
+        window.blit(styles.render("Settings", True, (255, 255, 255)), (settings_btn_rect.x + 8, settings_btn_rect.y + 15))
 
     if show_settings:
         settings_panel = Surface((400, 320))
@@ -196,7 +198,7 @@ while run:
 
         sound_status_text = "SOUND: ON" if sound_enabled else "SOUND: OFF"
         sound_text_render = styles.render(sound_status_text, True, (255, 255, 255))
-        window.blit(sound_text_render, (sound_toggle_rect.x + 15, sound_toggle_rect.y + 10))
+        window.blit(sound_text_render, (sound_toggle_rect.x + 15, sound_toggle_rect.y + 15))
 
         slider_color = (70, 70, 70) if sound_enabled else (50, 50, 50)
         draw.rect(window, slider_color, slider_bg_rect)
@@ -211,14 +213,14 @@ while run:
         window.blit(style.render(vol_text, True, (255, 255, 255)), (slider_bg_rect.x + 1, slider_bg_rect.y - 50))
 
         draw.rect(window, (0, 200, 100) if back_btn_rect.collidepoint((mx, my)) else (100, 100, 100), back_btn_rect)
-        window.blit(style.render("BACK", True, (255, 255, 255)), (back_btn_rect.x + 30, back_btn_rect.y + 5))
+        window.blit(style.render("BACK", True, (255, 255, 255)), (back_btn_rect.x + 30, back_btn_rect.y + 15))
         
         if quit_rect.collidepoint((mx, my)):
             draw.rect(window, COLOR_HOVER, quit_rect)
         else:
             draw.rect(window, COLOR_NORMAL, quit_rect)
         quit_text = style.render("QUIT", True, COLOR_TEXT)
-        window.blit(quit_text, (quit_rect.x + 40, quit_rect.y + 5))
+        window.blit(quit_text, (quit_rect.x + 40, quit_rect.y + 15))
         
         if not sound_pause and sound_enabled:
             pause_sound.play()
@@ -259,16 +261,16 @@ while run:
         continue
     #text for match
     text_match_score = style.render(f'P1: {score_player_1} | P2: {score_player_2}', 1, (255,255,255))
-    window.blit(text_match_score,(30, 455))
+    window.blit(text_match_score,(30, 465))
     # score perfect saves of ball
     text_score = style.render("Perfect saves of Ball:" + str(score), 1, (225, 255, 255))
-    window.blit(text_score,(10, 2))
+    window.blit(text_score,(10, 4))
     # informaition for space
     informaition_text = style.render("Press 'SPACE' to pause", True,(255, 219, 61))
-    window.blit(informaition_text,(360, 450))
+    window.blit(informaition_text,(365, 465))
     #information for how to play by button edition
-    informaition_play_text = styles.render("Press 'H' how to play", True, (255, 219, 61))
-    window.blit(informaition_play_text, (360, 2))
+    informaition_play_text = style.render("Press 'H' how to play", True, (255, 219, 61))
+    window.blit(informaition_play_text, (360, 4))
     # lose for player 2 and winner player 1 
     if ball.rect.x > 650:
         if score_player_1 <= 2:
@@ -289,13 +291,13 @@ while run:
                 sound_played = True
             # lose text
             lose = style.render("You lost the ball player 2", True, (0, 230, 255))
-            window.blit(lose, (200, 90))
+            window.blit(lose, (220, 90))
             # winner text
             winner = style.render("The player 1 is the winner", True, (255, 0, 0))
-            window.blit(winner, (190, 130))
+            window.blit(winner, (183, 130))
             # restart text
             restart_text = style.render("Press 'R' to Restart the game", True,(255, 219, 61))
-            window.blit(restart_text,(205, 200))
+            window.blit(restart_text,(220, 200))
             finish = True
     
     # lose for player 1 and winner player 2
@@ -318,13 +320,13 @@ while run:
                 sound_played = True
             # lose text
             lose = style.render("You lost the ball player 1", True, (255, 0, 0))
-            window.blit(lose, (200, 90))
+            window.blit(lose, (220, 90))
             # winner text
             winners = style.render("The player 2 is the winner", True, (0, 230, 255))
-            window.blit(winners, (190, 130))
+            window.blit(winners, (183, 130))
             # restart text
             restart_text = style.render("Press 'R' to Restart the game", True,(255, 219, 61))
-            window.blit(restart_text,(205, 200))
+            window.blit(restart_text,(220, 200))
             finish = True
     
     # finish and rules
